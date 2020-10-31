@@ -1,11 +1,19 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    ffi (1.13.1)
+    listen (3.2.1)
+      rb-fsevent (~> 0.10, >= 0.10.3)
+      rb-inotify (~> 0.9, >= 0.9.10)
+    rb-fsevent (0.10.4)
+    rb-inotify (0.10.1)
+      ffi (~> 1.0)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  listen (~> 3.2)
 
 BUNDLED WITH
    2.1.4
