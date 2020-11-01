@@ -8,6 +8,7 @@ require 'fileutils'
 # Archiver Class
 class Archiver
   attr_reader :src_dir, :dst_dis, :resize, :resize_x, :resize_y, :keep_ratio
+
   def initialize(file_path)
     @config_file_path = file_path
     read_configs
@@ -30,7 +31,7 @@ class Archiver
       configure_resize_options(yaml)
     else
       puts 'Config file cannot found!'
-      raise Exception
+      raise StandardError
     end
   end
 
@@ -40,7 +41,7 @@ class Archiver
 
     if @src_dir.nil? || (!File.exist? @src_dir)
       put 'Source directory is not set or not exists'
-      raise Exception
+      raise StandardError
     elsif !File.exist? @dst_dir
       FileUtils.mkdir_p @dst_dir
     end
