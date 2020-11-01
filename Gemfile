@@ -6,4 +6,4 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 gem 'listen', '~> 3.2'
 
-gem "rubocop", "~> 1.1", :group => :test
+gem 'rubocop', '~> 1.1', group: :test
