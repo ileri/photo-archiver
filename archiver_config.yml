@@ -1,0 +1,7 @@
+archiver:
+  src_dir: "./photos"
+  dst_dir: "./archived_photos"
+  resize: true
+  resize_x: "640"
+  resize_y: "480"
+  keep_ratio: true
