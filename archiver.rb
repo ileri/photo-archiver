@@ -3,20 +3,25 @@
 
 require 'yaml'
 require 'listen'
+require 'logger'
 require 'fileutils'
+require 'mini_magick'
 
 # Archiver Class
 class Archiver
   attr_reader :src_dir, :dst_dis, :resize, :resize_x, :resize_y, :keep_ratio
 
+  PHOTO_EXTENSIONS = %w[.jpg .jpeg .png .gif].freeze
+
   def initialize(file_path)
     @config_file_path = file_path
     read_configs
+    apply_auto_delete if @auto_delete
   end
 
   def listen
     listener = Listen.to(@src_dir) do |_modified, added, _removed|
-      apply_archiving added if added
+      added.each { |f| apply_archiving f }
     end
     listener.start
     sleep
@@ -29,6 +34,7 @@ class Archiver
       yaml = YAML.safe_load(File.read(@config_file_path))['archiver']
       configure_dirs(yaml)
       configure_resize_options(yaml)
+      configure_other_options(yaml)
     else
       puts 'Config file cannot found!'
       raise StandardError
@@ -54,13 +60,69 @@ class Archiver
     @keep_ratio = yaml['keep_ratio']
   end
 
+  def configure_other_options(yaml)
+    @logging = yaml['logging']
+    @log = Logger.new($stdout) if @logging
+    @auto_delete = yaml['auto_delete']
+    @delete_days = yaml['delete_days']
+    @archive_original = yaml['archive_original']
+    @archive_resized = yaml['archive_resized']
+    @original_prefix = yaml['original_prefix']
+    @original_postfix = yaml['original_postfix']
+  end
+
+  def photo?(file_path)
+    is_photo = false
+    PHOTO_EXTENSIONS.each { |ext| is_photo ||= file_path.downcase.end_with? ext }
+    print(is_photo)
+    is_photo
+  end
+
+  def resize_photo(file_path)
+    image = MiniMagick::Image.open(file_path)
+    image.resize "#{@resize_x}x#{@resize_y}#{'>' if @keep_ratio}"
+    image.write File.join(@dst_dir, File.basename(file_path))
+    image
+  end
+
+  def archive_original_file(archive_path, file_path)
+    base = File.basename(file_path, '.*')
+    ext = File.extname(file_path)
+    archived_file_name = "#{@original_prefix}#{base}#{@original_postfix}#{ext}"
+    FileUtils.mv file_path, File.join(archive_path, archived_file_name)
+  end
+
+  def archive_resized_image(archive_path, file_path, resized_image)
+    archived_file_name = File.join archive_path, File.basename(file_path)
+    resized_image.write archived_file_name
+  end
+
+  def archive_file(file_path, resized_image)
+    today = Time.new
+    archive_path = File.join(@dst_dir, today.year.to_s, today.month.to_s, today.day.to_s)
+    FileUtils.mkdir_p archive_path
+
+    @archive_original ? archive_original_file(archive_path, file_path) : FileUtils.rm_f(file_path)
+    archive_resized_image(archive_path, file_path, resized_image) if @archive_resized
+  end
+
+  def apply_auto_delete
+    deletable_files = Dir.glob("#{@dst_dir}/*").select { |e| File.file? e }
+    deletable_files.each do |f|
+      FileUtils.rm_f(f) if File.ctime(f).to_datetime < (DateTime.now - @delete_days)
+    end
+  end
+
   def apply_archiving(file_path)
-    puts file_path
-    # TODO : Implement resizing and archiving
+    will_resize = @resize && photo?(file_path)
+    @log.info("File #{'resizing and' if will_resize} archiving: #{file_path}") if @logging
+    resized_image = will_resize ? resize_photo(file_path) : nil
+    archive_file(file_path, resized_image)
   end
 end
 
 def main
+  Signal.trap('INT') { exit }
   archiver = Archiver.new('archiver_config.yml')
   archiver.listen
 end
