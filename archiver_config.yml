@@ -5,3 +5,10 @@ archiver:
   resize_x: "640"
   resize_y: "480"
   keep_ratio: true
+  logging: true
+  auto_delete: true
+  delete_days: 1
+  archive_original: true
+  archive_resized: true
+  original_prefix: ''
+  original_postfix: '_original'
