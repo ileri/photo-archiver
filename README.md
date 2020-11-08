@@ -1,2 +1,27 @@
 # photo-archiver
+
 A simple manager and archiver for photos.
+
+## Configuration
+
+This simple archiver uses configs from a YAML file.
+
+Edit `archiver_config.yml` file to make configuration.
+Configuration  setting are described below.
+
+```yaml
+archiver:
+  src_dir: "./photos"           # Source directory. This directory is listening for new files. ( type: string )
+  dst_dir: "./archived_photos"  # Destination directory. Archived photos will store in this directory. ( type: string )
+  resize: true                  # Apply resizing to photos. ( type: boolean )
+  resize_x: "640"               # If apply resizing, width of resized photo. ( type: integer )
+  resize_y: "480"               # If apply resizing, height of resized photo. ( type: integer )
+  keep_ratio: true              # If apply resizing, keep the oroginal ratio or not. ( type: boolean )
+  logging: true                 # Enable logging for image archiving.
+  auto_delete: true             # Automatically delete not archived photos on init. ( type: boolean )
+  delete_days: 1                # If auto_delete enabled, delete older than N days photos. ( type: integer )
+  archive_original: true        # Archive original photo ( type: boolean )
+  archive_resized: true         # Archive resized photo ( type: boolean )
+  original_prefix: ''           # Prefix for archived original image ( type: string )
+  original_postfix: '_original' # Postfix for archived original image ( type. string )
+```
