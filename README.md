@@ -11,6 +11,24 @@ If you will use resizing feature, you
 [need to have installed](https://github.com/minimagick/minimagick#requirements)
 ImageMagick or GraphicsMagick in your system.
 
+## Installation
+
+To use photo-archiver in you system, you need to install depended gems to
+your system. To install necessary gems with bundler helper:
+
+*If you want to install test environment, remove `--without test` parameters.*
+
+```sh
+bundle install --without test
+```
+
+If bundler completed successfully, and pre-requirements are installed,
+installation is completed. You can configure and start to use application.
+
+```sh
+bundle exec ruby archiver.rb
+```
+
 ## Configuration
 
 This simple archiver uses configs from a YAML file.
