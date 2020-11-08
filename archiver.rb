@@ -14,12 +14,14 @@ class Archiver
   PHOTO_EXTENSIONS = %w[.jpg .jpeg .png .gif].freeze
 
   def initialize(file_path)
+    @log = Logger.new($stdout)
     @config_file_path = file_path
     read_configs
     apply_auto_delete if @auto_delete
   end
 
   def listen
+    @log.info "Photo archiver initialized. Listening #{@src_dir} directory."
     listener = Listen.to(@src_dir) do |_modified, added, _removed|
       added.each { |f| apply_archiving f }
     end
@@ -36,7 +38,7 @@ class Archiver
       configure_resize_options(yaml)
       configure_other_options(yaml)
     else
-      puts 'Config file cannot found!'
+      @log.error 'Config file cannot found!'
       raise StandardError
     end
   end
@@ -46,7 +48,7 @@ class Archiver
     @dst_dir = yaml['dst_dir'] || 'archived'
 
     if @src_dir.nil? || (!File.exist? @src_dir)
-      put 'Source directory is not set or not exists'
+      @log.error 'Source directory is not set or not exists'
       raise StandardError
     elsif !File.exist? @dst_dir
       FileUtils.mkdir_p @dst_dir
@@ -62,7 +64,6 @@ class Archiver
 
   def configure_other_options(yaml)
     @logging = yaml['logging']
-    @log = Logger.new($stdout) if @logging
     @auto_delete = yaml['auto_delete']
     @delete_days = yaml['delete_days']
     @archive_original = yaml['archive_original']
@@ -74,7 +75,6 @@ class Archiver
   def photo?(file_path)
     is_photo = false
     PHOTO_EXTENSIONS.each { |ext| is_photo ||= file_path.downcase.end_with? ext }
-    print(is_photo)
     is_photo
   end
 
