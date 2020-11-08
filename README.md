@@ -50,7 +50,7 @@ archiver:
   archive_original: true        # Archive original photo ( type: boolean )
   archive_resized: true         # Archive resized photo ( type: boolean )
   original_prefix: ''           # Prefix for archived original image ( type: string )
-  original_postfix: '_original' # Postfix for archived original image ( type. string )
+  original_postfix: '_original' # Postfix for archived original image ( type: string )
 ```
 
 ## Supported Operating Systems
