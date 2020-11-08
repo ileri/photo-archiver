@@ -2,6 +2,15 @@
 
 A simple manager and archiver for photos.
 
+## Pre-Requirements
+
+This application is written in `Ruby` language and optionally uses `bundle`
+helper.
+
+If you will use resizing feature, you
+[need to have installed](https://github.com/minimagick/minimagick#requirements)
+ImageMagick or GraphicsMagick in your system.
+
 ## Configuration
 
 This simple archiver uses configs from a YAML file.
@@ -25,3 +34,10 @@ archiver:
   original_prefix: ''           # Prefix for archived original image ( type: string )
   original_postfix: '_original' # Postfix for archived original image ( type. string )
 ```
+
+## Supported Operating Systems
+
+This application is written in **Linux** ( Debian ) environment and fully
+compatible with Unix-like systems ( includes **macOS X** too ).
+
+Application also fully compatible with **Windows** operating systems.
