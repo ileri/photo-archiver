@@ -36,6 +36,9 @@ This simple archiver uses configs from a YAML file.
 Edit `archiver_config.yml` file to make configuration.
 Configuration  setting are described below.
 
+**Warning:** Never set `src_dir` same with `dst_dir` or `dst_dir` as a subdir
+of `src_dir`.  This will cause to recurrence!
+
 ```yaml
 archiver:
   src_dir: "./photos"           # Source directory. This directory is listening for new files. ( type: string )
