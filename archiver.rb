@@ -18,6 +18,7 @@ class Archiver
     @config_file_path = file_path
     read_configs
     apply_auto_delete if @auto_delete
+    run_init_process if @run_on_init
   end
 
   def listen
@@ -70,6 +71,7 @@ class Archiver
     @archive_resized = yaml['archive_resized']
     @original_prefix = yaml['original_prefix']
     @original_postfix = yaml['original_postfix']
+    @run_on_init = yaml['run_on_init']
   end
 
   def photo?(file_path)
@@ -118,6 +120,12 @@ class Archiver
     @log.info("File #{'resizing and' if will_resize} archiving: #{file_path}") if @logging
     resized_image = will_resize ? resize_photo(file_path) : nil
     archive_file(file_path, resized_image)
+  end
+
+  def run_init_process
+    @log.info('Executing "run on init" process') if @logging
+    files = Dir.glob("#{@src_dir}/*").select { |e| File.file? e }
+    files.each { |f| apply_archiving f }
   end
 end
 

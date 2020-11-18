@@ -12,3 +12,4 @@ archiver:
   archive_resized: true
   original_prefix: ''
   original_postfix: '_original'
+  run_on_init: true
