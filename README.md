@@ -1,6 +1,6 @@
 # photo-archiver
 
-Status: ![Workflow Status](https://github.com/ileri/photo-archiver/workflows/Ruby/badge.svg)
+Status: [![Workflow Status](https://github.com/ileri/photo-archiver/workflows/Ruby/badge.svg)](https://github.com/ileri/photo-archiver/actions)
 
 A simple manager and archiver for photos.
 
